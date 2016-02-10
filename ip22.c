@@ -38,14 +38,12 @@ int tcpSend(int sockfd, char *data, size_t bytes) {
     printf("%c", data[i]);
   printf("|\n");
 
-  free(SendBuffer);
 
   return Return;
 }
 
 int tcpRead(int sockfd) {
 
-  free(ReceiveBuffer);
   ReceiveBuffer = malloc(1460); // TCP payload size in most settings
   size_t Read;
 
@@ -218,7 +216,6 @@ int main() {
     memcpy(Port, SecondSpacePosition + 1,
         NewLinePosition - SecondSpacePosition - 1);
 
-    free(ReceiveBuffer);
 
     AddressInfo = getIP(DomainName, Port, AddressInfo);
 
@@ -256,8 +253,6 @@ int main() {
 
     tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
 
-    free(DomainName);
-    free(Port);
     freeaddrinfo(AddressInfo);
 
   }
