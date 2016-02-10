@@ -119,8 +119,10 @@ struct addrinfo* getIP(char *DomainName, char *Port,
     return NULL;
   }
 
+  /*
   free(DomainName);
   free(Port);
+  */
 
   return AddressInfo;
 }
