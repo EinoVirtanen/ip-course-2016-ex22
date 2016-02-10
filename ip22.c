@@ -196,7 +196,8 @@ int main() {
   char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition,
       *NewLinePosition, LocalAddressString[100];
   struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo)), *AddressInfoPoller;
-  struct sockaddr_in LocalAddress, Local6Address;
+  struct sockaddr_in LocalAddress;
+  struct sockaddr_in6 Local6Address;
 
   printf("Running exercise 2.2 by Eino.\n");
 
@@ -260,9 +261,9 @@ int main() {
 
     } else {
       printf("AddressInfo->ai_family is IPv6.\n");
-      Local6Address = getOwnIP(SecondarySocket, Local6Address);
+      Local6Address = getOwnIP6(SecondarySocket, Local6Address);
 
-      inet_ntop(AF_INET6, &Local6Address.sin_addr, LocalAddressString,
+      inet_ntop(AF_INET6, &Local6Address.sin6_addr, LocalAddressString,
           sizeof(LocalAddressString));
     }
 
