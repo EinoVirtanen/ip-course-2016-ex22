@@ -119,6 +119,9 @@ struct addrinfo* getIP(char *DomainName, char *Port,
     return NULL;
   }
 
+  free(DomainName);
+  free(Port);
+
   return AddressInfo;
 }
 
@@ -240,8 +243,6 @@ int main() {
 
     AddressInfo = getIP(DomainName, Port, AddressInfo);
 
-    free(DomainName);
-    free(Port);
 
     if (!AddressInfo)
       return 0;
