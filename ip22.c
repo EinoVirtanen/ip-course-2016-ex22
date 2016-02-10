@@ -227,13 +227,15 @@ int main() {
 
   // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
 
-  inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString, sizeof(LocalAddressString));
+  inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
+      sizeof(LocalAddressString));
 
-  sprintf(SendBuffer, "ADDR %s %d 296665", LocalAddressString, ntohs(LocalAddress.sin_port));
-  printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer, strlen(SendBuffer));
+  sprintf(SendBuffer, "ADDR %s %d 296665", LocalAddressString,
+      ntohs(LocalAddress.sin_port));
+  printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
+      strlen(SendBuffer));
 
-
-  //tcpSend(SecondarySocket, SendBuffer, SendBufferSize);
+  tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
 
   return 0;
 }
