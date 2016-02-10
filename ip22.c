@@ -20,7 +20,7 @@
 
 int PrimarySocket, SecondarySocket;
 struct sockaddr_in PrimaryAddress;
-unsigned char *ReceiveBuffer;
+char *ReceiveBuffer;
 
 int tcpSend(int sockfd, unsigned char *data, size_t bytes) {
 
@@ -64,7 +64,7 @@ int tcpRead(int sockfd) {
 int sendInitData() {
 
   const char InitData[] = "296665\n2.2-names\n";
-  const char InitIP[15];
+  char InitIP[15];
 
   FILE *fp;
   fp = fopen(".info", "r");
@@ -101,7 +101,7 @@ int sendInitData() {
   return 1;
 }
 
-struct addrinfo* getIP(unsigned char *DomainName, unsigned char *Port,
+struct addrinfo* getIP(char *DomainName, char *Port,
     struct addrinfo *AddressInfo) {
 
   struct addrinfo AddressFilter;
@@ -127,7 +127,7 @@ struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 
   memset(&LocalAddress, 0, sizeof(LocalAddress));
 
-  size_t LocalAddressSize = sizeof(LocalAddress);
+  socklen_t LocalAddressSize = sizeof(LocalAddress);
 
   if (getsockname(Socket, (struct sockaddr *) &LocalAddress, &LocalAddressSize)
       < 0) {
@@ -177,8 +177,7 @@ int tcpConnect(struct addrinfo *AddressInfo) {
 
 int main() {
 
-  unsigned char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition,
-      *NewLinePosition;
+  char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition, *NewLinePosition;
   struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo));
   struct sockaddr_in LocalAddress;
 
@@ -199,9 +198,9 @@ int main() {
 
   if (DEBUG)
     printf(
-        "ReceiveBuffer == %d\nFirstSpacePosition == %d\nSecondSpacePosition == %d\nNewLinePosition == %d\n",
-        (int) ReceiveBuffer, (int) FirstSpacePosition,
-        (int) SecondSpacePosition, (int) NewLinePosition);
+        "ReceiveBuffer == %p\nFirstSpacePosition == %p\nSecondSpacePosition == %p\nNewLinePosition == %p\n",
+        ReceiveBuffer, FirstSpacePosition, SecondSpacePosition,
+        NewLinePosition);
 
   DomainName = malloc(
       sizeof(char) * (SecondSpacePosition - FirstSpacePosition - 1));
