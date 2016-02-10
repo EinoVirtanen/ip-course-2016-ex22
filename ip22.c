@@ -100,7 +100,7 @@ int sendInitData() {
   return 1;
 }
 
-struct addrinfo* getIP(char *DN, char *Po, struct addrinfo *AddressInfo) {
+struct addrinfo* getIP(const char *DN, const char *Po, struct addrinfo *AddressInfo) {
 
   struct addrinfo AddressFilter;
 
