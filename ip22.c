@@ -38,7 +38,6 @@ int tcpSend(int sockfd, char *data, size_t bytes) {
     printf("%c", data[i]);
   printf("|\n");
 
-
   return Return;
 }
 
@@ -138,7 +137,7 @@ struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 }
 
 // Course material as basis
-int tcpConnect(struct addrinfo *AddressInfo) {
+struct addrinfo *tcpConnect(struct addrinfo *AddressInfo) {
 
   int NthAddress = 1;
 
@@ -167,10 +166,10 @@ int tcpConnect(struct addrinfo *AddressInfo) {
 
   if (SecondarySocket < 0) {
     printf("Failed to find IP to open a socket to.\n");
-    return 0;
+    return NULL;
   } else {
     printf("Succesfully connected to an IP address.\n");
-    return 1;
+    return AddressInfo;
   }
 
 }
@@ -216,13 +215,14 @@ int main() {
     memcpy(Port, SecondSpacePosition + 1,
         NewLinePosition - SecondSpacePosition - 1);
 
-
     AddressInfo = getIP(DomainName, Port, AddressInfo);
 
     if (!AddressInfo)
       return 0;
 
-    if (!tcpConnect(AddressInfo))
+    AddressInfo = tcpConnect(AddressInfo);
+
+    if (!AddressInfo)
       return 0;
 
     LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
