@@ -177,7 +177,7 @@ struct addrinfo *tcpConnect(struct addrinfo *AddressInfo) {
 int main() {
 
   char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition,
-      *NewLinePosition, LocalAddressString[30];
+      *NewLinePosition, LocalAddressString[100];
   struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo)), *AddressInfoPoller;
   struct sockaddr_in LocalAddress;
 
@@ -191,7 +191,7 @@ int main() {
 
   while (1) {
 
-    memset(LocalAddressString, '\0', 30);
+    memset(LocalAddressString, '\0', 100);
     memset(&LocalAddress, 0, sizeof(struct sockaddr_in));
 
     if (!tcpRead(PrimarySocket))
