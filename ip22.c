@@ -38,6 +38,8 @@ int tcpSend(int sockfd, char *data, size_t bytes) {
     printf("%c", data[i]);
   printf("|\n");
 
+  free(SendBuffer);
+
   return Return;
 }
 
@@ -215,6 +217,8 @@ int main() {
     memset(Port, '\0', NewLinePosition - SecondSpacePosition);
     memcpy(Port, SecondSpacePosition + 1,
         NewLinePosition - SecondSpacePosition - 1);
+
+    free(ReceiveBuffer);
 
     AddressInfo = getIP(DomainName, Port, AddressInfo);
 
