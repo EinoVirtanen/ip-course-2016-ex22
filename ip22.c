@@ -123,7 +123,7 @@ struct addrinfo* getIP(unsigned char *DomainName, unsigned char *Port,
   return AddressInfo;
 }
 
-int getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
+struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 
   memset(&LocalAddress, 0, sizeof(LocalAddress));
 
@@ -132,10 +132,10 @@ int getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
   if (getsockname(Socket, (struct sockaddr *) &LocalAddress, &LocalAddressSize)
       < 0) {
     printf("Error getting local address.\n");
-    return 0;
+    return NULL;
   }
 
-  return 1;
+  return LocalAddress;
 }
 
 // Course material as basis
@@ -146,11 +146,6 @@ int tcpConnect(struct addrinfo *AddressInfo) {
   do {
     if (DEBUG)
       printf("Trying to connect to the %d. address.\n", NthAddress++);
-
-    if (DEBUG)
-      printf(
-          "AddressInfo->ai_next == %p (Why is this (nil) if there seems to be 2 addresses?)\n",
-          AddressInfo->ai_next);
 
     SecondarySocket = socket(AddressInfo->ai_family, AddressInfo->ai_socktype,
         AddressInfo->ai_protocol);
@@ -225,6 +220,13 @@ int main() {
 
   if (!tcpConnect(AddressInfo))
     return 0;
+
+  LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
+
+  if(!LocalAddress)
+    return 0;
+
+  // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
 
   return 0;
 }
