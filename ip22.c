@@ -191,6 +191,8 @@ int main() {
 
   while (1) {
 
+    memset(LocalAddressString, '\0', 30);
+
     if (!tcpRead(PrimarySocket))
       return 0;
 
