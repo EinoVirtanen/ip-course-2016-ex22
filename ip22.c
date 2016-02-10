@@ -141,7 +141,6 @@ int getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 // Course material as basis
 int tcpConnect(struct addrinfo *AddressInfo) {
 
-  printf("AddressInfo->ai_next == %p\n", AddressInfo->ai_next);
   int NthAddress = 1;
 
   do {
@@ -223,8 +222,6 @@ int main() {
 
   if (!AddressInfo)
     return 0;
-
-  printf("AddressInfo->ai_next == %p\n", AddressInfo->ai_next);
 
   if (!tcpConnect(AddressInfo))
     return 0;
