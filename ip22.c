@@ -249,7 +249,7 @@ int main() {
           sizeof(LocalAddressString));
     }
 
-    pritnf("LocalAddressString == |%s|\n", LocalAddressString);
+    printf("LocalAddressString == |%s|\n", LocalAddressString);
 
     sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
         ntohs(LocalAddress.sin_port));
