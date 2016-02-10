@@ -101,7 +101,7 @@ int sendInitData() {
   return 1;
 }
 
-int getIP(unsigned char *DomainName, unsigned char *Port,
+struct addrinfo* getIP(unsigned char *DomainName, unsigned char *Port,
     struct addrinfo *AddressInfo) {
 
   struct addrinfo AddressFilter;
@@ -117,20 +117,10 @@ int getIP(unsigned char *DomainName, unsigned char *Port,
 
   if (getaddrinfo(DomainName, Port, &AddressFilter, &AddressInfo) != 0) {
     printf("Failed to get IP!\n");
-    return 0;
+    return NULL;
   }
 
-  printf("AddressInfo->ai_next == %p\n", AddressInfo->ai_next);
-  /*
-   if (DEBUG) {
-   printf("Got IPs: ");
-   for(struct addrinfo *AddressPointer = AddressInfo; AddressPointer != NULL; AddressPointer = AddressPointer->ai_next) {
-   printf("%d, ", AddressPointer->ai_addr->sa_data);
-   }
-   printf("\n");
-   }
-   */
-  return 1;
+  return AddressInfo;
 }
 
 int getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
@@ -229,7 +219,9 @@ int main() {
   memcpy(Port, SecondSpacePosition + 1,
       NewLinePosition - SecondSpacePosition - 1);
 
-  if (!getIP(DomainName, Port, AddressInfo))
+  AddressInfo = getIP(DomainName, Port, AddressInfo);
+
+  if (!AddressInfo)
     return 0;
 
   printf("AddressInfo->ai_next == %p\n", AddressInfo->ai_next);
