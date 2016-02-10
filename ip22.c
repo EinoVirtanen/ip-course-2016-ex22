@@ -233,10 +233,13 @@ int main() {
 
     if (AddressInfo->ai_family == AF_INET) {
 
+      printf("AddressInfo->ai_family is IPv4.\n");
+
       inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
           sizeof(LocalAddressString));
 
     } else {
+      printf("AddressInfo->ai_family is IPv6.\n");
 
       inet_ntop(AF_INET6, &LocalAddress.sin_addr, LocalAddressString,
           sizeof(LocalAddressString));
