@@ -100,7 +100,8 @@ int sendInitData() {
   return 1;
 }
 
-struct addrinfo* getIP(const char *DN, const char *Po, struct addrinfo *AddressInfo) {
+struct addrinfo* getIP(const char *DN, const char *Po,
+    struct addrinfo *AddressInfo) {
 
   struct addrinfo AddressFilter;
 
@@ -191,8 +192,7 @@ int main() {
 
   char DomainName[100], Port[10], *FirstSpacePosition, *SecondSpacePosition,
       *NewLinePosition, LocalAddressString[100];
-  struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo)),
-      *AddressInfoPoller;
+  struct addrinfo *AddressInfo, *AddressInfoPoller;
   struct sockaddr_in LocalAddress;
   struct sockaddr_in6 Local6Address;
 
@@ -205,6 +205,8 @@ int main() {
     return 0;
 
   while (1) {
+
+    AddressInfo = malloc(sizeof(struct addrinfo));
 
     memset(LocalAddressString, '\0', 100);
     memset(&LocalAddress, 0, sizeof(struct sockaddr_in));
