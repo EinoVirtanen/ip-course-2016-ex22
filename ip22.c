@@ -132,7 +132,6 @@ struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
   if (getsockname(Socket, (struct sockaddr *) &LocalAddress, &LocalAddressSize)
       < 0) {
     printf("Error getting local address.\n");
-    return NULL;
   }
 
   return LocalAddress;
@@ -222,9 +221,6 @@ int main() {
     return 0;
 
   LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
-
-  if(!LocalAddress)
-    return 0;
 
   // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
 
