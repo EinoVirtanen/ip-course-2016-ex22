@@ -64,7 +64,11 @@ int tcpRead(int sockfd) {
 int sendInitData() {
 
   const char InitData[] = "296665\n2.2-names\n";
-  const char InitIP[] = "195.148.124.76";
+  const char InitIP[14];
+
+  FILE *fp;
+  fp = fopen(".info", "r");
+  fscanf(fp, "%s", InitIP);
 
   if (DEBUG)
     printf("Trying to send init data to the server.\n");
