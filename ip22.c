@@ -124,6 +124,9 @@ struct addrinfo* getIP(char *DomainName, char *Port,
 
 struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 
+  char LocalAddressStringTmp[100];
+  memset(&LocalAddressStringTmp, 0, 100);
+
   memset(&LocalAddress, 0, sizeof(LocalAddress));
 
   socklen_t LocalAddressSize = sizeof(LocalAddress);
@@ -132,6 +135,11 @@ struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
       < 0) {
     printf("Error getting local address.\n");
   }
+
+  inet_ntop(AF_INET6, &LocalAddress.sin_addr, LocalAddressStringTmp,
+      sizeof(LocalAddressStringTmp));
+
+  printf("getOwnIP: LocalAddress is now |%s|\n", LocalAddressStringTmp);
 
   return LocalAddress;
 }
