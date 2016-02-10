@@ -190,55 +190,56 @@ int main() {
   if (!sendInitData())
     return 0;
 
-  if (!tcpRead(PrimarySocket))
-    return 0;
+  while (1) {
 
-  FirstSpacePosition = strchr(ReceiveBuffer, ' ');
-  SecondSpacePosition = strchr(FirstSpacePosition + 1, ' ');
-  NewLinePosition = strchr(SecondSpacePosition, '\n');
+    if (!tcpRead(PrimarySocket))
+      return 0;
 
-  if (DEBUG)
-    printf(
-        "ReceiveBuffer == %p\nFirstSpacePosition == %p\nSecondSpacePosition == %p\nNewLinePosition == %p\n",
-        ReceiveBuffer, FirstSpacePosition, SecondSpacePosition,
-        NewLinePosition);
+    FirstSpacePosition = strchr(ReceiveBuffer, ' ');
+    SecondSpacePosition = strchr(FirstSpacePosition + 1, ' ');
+    NewLinePosition = strchr(SecondSpacePosition, '\n');
 
-  DomainName = malloc(
-      sizeof(char) * (SecondSpacePosition - FirstSpacePosition - 1));
-  memcpy(DomainName, FirstSpacePosition + 1,
-      SecondSpacePosition - FirstSpacePosition - 1);
+    if (DEBUG)
+      printf(
+          "ReceiveBuffer == %p\nFirstSpacePosition == %p\nSecondSpacePosition == %p\nNewLinePosition == %p\n",
+          ReceiveBuffer, FirstSpacePosition, SecondSpacePosition,
+          NewLinePosition);
 
-  Port = malloc(sizeof(char) * (NewLinePosition - SecondSpacePosition - 1));
-  memcpy(Port, SecondSpacePosition + 1,
-      NewLinePosition - SecondSpacePosition - 1);
+    DomainName = malloc(
+        sizeof(char) * (SecondSpacePosition - FirstSpacePosition - 1));
+    memcpy(DomainName, FirstSpacePosition + 1,
+        SecondSpacePosition - FirstSpacePosition - 1);
 
-  AddressInfo = getIP(DomainName, Port, AddressInfo);
+    Port = malloc(sizeof(char) * (NewLinePosition - SecondSpacePosition - 1));
+    memcpy(Port, SecondSpacePosition + 1,
+        NewLinePosition - SecondSpacePosition - 1);
 
-  if (!AddressInfo)
-    return 0;
+    AddressInfo = getIP(DomainName, Port, AddressInfo);
 
-  if (!tcpConnect(AddressInfo))
-    return 0;
+    if (!AddressInfo)
+      return 0;
 
-  LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
+    if (!tcpConnect(AddressInfo))
+      return 0;
 
-  SendBuffer = malloc(1024);
-  SendBuffer = memset(SendBuffer, '\0', 1024);
+    LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
 
-  // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
+    SendBuffer = malloc(1024);
+    SendBuffer = memset(SendBuffer, '\0', 1024);
 
-  inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
-      sizeof(LocalAddressString));
+    // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
 
-  sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
-      ntohs(LocalAddress.sin_port));
-  printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
-      strlen(SendBuffer));
+    inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
+        sizeof(LocalAddressString));
 
-  tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
+    sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
+        ntohs(LocalAddress.sin_port));
+    printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
+        strlen(SendBuffer));
 
-  if (!tcpRead(PrimarySocket))
-    return 0;
+    tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
+
+  }
 
   return 0;
 }
