@@ -124,7 +124,6 @@ struct addrinfo* getIP(char *DomainName, char *Port,
 
 struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 
-
   memset(&LocalAddress, 0, sizeof(struct sockaddr_in));
 
   socklen_t LocalAddressSize = sizeof(LocalAddress);
@@ -137,9 +136,7 @@ struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
   return LocalAddress;
 }
 
-
 struct sockaddr_in6 getOwnIP6(int Socket, struct sockaddr_in6 Local6Address) {
-
 
   memset(&Local6Address, 0, sizeof(struct sockaddr_in6));
 
@@ -195,7 +192,8 @@ int main() {
 
   char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition,
       *NewLinePosition, LocalAddressString[100];
-  struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo)), *AddressInfoPoller;
+  struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo)),
+      *AddressInfoPoller;
   struct sockaddr_in LocalAddress;
   struct sockaddr_in6 Local6Address;
 
@@ -237,6 +235,9 @@ int main() {
     memcpy(Port, SecondSpacePosition + 1,
         NewLinePosition - SecondSpacePosition - 1);
 
+    if (DEBUG)
+      printf("Calling AddressInfo with %s:%s", DomainName, Port);
+
     AddressInfo = getIP(DomainName, Port, AddressInfo);
 
     if (!AddressInfo)
@@ -246,7 +247,6 @@ int main() {
 
     if (!AddressInfoPoller)
       return 0;
-
 
     SendBuffer = malloc(1024);
     SendBuffer = memset(SendBuffer, '\0', 1024);
@@ -270,8 +270,6 @@ int main() {
       sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
           ntohs(Local6Address.sin6_port));
     }
-
-
 
     printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
         strlen(SendBuffer));
