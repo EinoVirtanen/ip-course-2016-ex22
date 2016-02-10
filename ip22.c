@@ -236,9 +236,12 @@ int main() {
         NewLinePosition - SecondSpacePosition - 1);
 
     if (DEBUG)
-      printf("Calling AddressInfo with %s:%s", DomainName, Port);
+      printf("Calling getIP with %s:%s\n", DomainName, Port);
 
     AddressInfo = getIP(DomainName, Port, AddressInfo);
+
+    free(DomainName);
+    free(Port);
 
     if (!AddressInfo)
       return 0;
