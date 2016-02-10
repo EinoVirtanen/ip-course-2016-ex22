@@ -100,8 +100,7 @@ int sendInitData() {
   return 1;
 }
 
-struct addrinfo* getIP(char *DomainName, char *Port,
-    struct addrinfo *AddressInfo) {
+struct addrinfo* getIP(char *DN, char *Po, struct addrinfo *AddressInfo) {
 
   struct addrinfo AddressFilter;
 
@@ -109,12 +108,12 @@ struct addrinfo* getIP(char *DomainName, char *Port,
   memset(&AddressFilter, 0, sizeof(struct addrinfo));
 
   if (DEBUG)
-    printf("Trying to get IP of %s:%s.\n", DomainName, Port);
+    printf("Trying to get IP of %s:%s.\n", DN, Po);
 
   AddressFilter.ai_family = AF_UNSPEC;
   AddressFilter.ai_socktype = SOCK_STREAM;
 
-  if (getaddrinfo(DomainName, Port, &AddressFilter, &AddressInfo) != 0) {
+  if (getaddrinfo(DN, Po, &AddressFilter, &AddressInfo) != 0) {
     printf("Failed to get IP!\n");
     return NULL;
   }
@@ -190,7 +189,7 @@ struct addrinfo *tcpConnect(struct addrinfo *AddressInfo) {
 
 int main() {
 
-  char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition,
+  char DomainName[100], Port[10], *FirstSpacePosition, *SecondSpacePosition,
       *NewLinePosition, LocalAddressString[100];
   struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo)),
       *AddressInfoPoller;
@@ -224,25 +223,12 @@ int main() {
           ReceiveBuffer, FirstSpacePosition, SecondSpacePosition,
           NewLinePosition);
 
-    if (!DomainName) {
-      DomainName = malloc(
-          sizeof(char) * (SecondSpacePosition - FirstSpacePosition));
-    } else {
-      DomainName = realloc(DomainName,
-          sizeof(char) * (SecondSpacePosition - FirstSpacePosition));
-    }
-    memset(DomainName, '\0', SecondSpacePosition - FirstSpacePosition);
-    memcpy(DomainName, FirstSpacePosition + 1,
+    memset(&DomainName, '\0', 100);
+    memcpy(&DomainName, FirstSpacePosition + 1,
         SecondSpacePosition - FirstSpacePosition - 1);
 
-    if (!Port) {
-      Port = malloc(sizeof(char) * (NewLinePosition - SecondSpacePosition));
-    } else {
-      Port = realloc(Port,
-          sizeof(char) * (NewLinePosition - SecondSpacePosition));
-    }
-    memset(Port, '\0', NewLinePosition - SecondSpacePosition);
-    memcpy(Port, SecondSpacePosition + 1,
+    memset(&Port, '\0', 10);
+    memcpy(&Port, SecondSpacePosition + 1,
         NewLinePosition - SecondSpacePosition - 1);
 
     if (DEBUG)
