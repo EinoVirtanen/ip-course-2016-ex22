@@ -224,54 +224,34 @@ int main() {
     if (!tcpConnect(AddressInfo))
       return 0;
 
+    LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
+
+    SendBuffer = malloc(1024);
+    SendBuffer = memset(SendBuffer, '\0', 1024);
+
+    // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
+
     if (AddressInfo->ai_family == AF_INET) {
-
-      LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
-
-      SendBuffer = malloc(1024);
-      SendBuffer = memset(SendBuffer, '\0', 1024);
-
-      // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
 
       inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
           sizeof(LocalAddressString));
 
-      sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
-          ntohs(LocalAddress.sin_port));
-      printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
-          strlen(SendBuffer));
-
-      tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
-
-      free(DomainName);
-      free(Port);
-      freeaddrinfo(AddressInfo);
-
     } else {
-
-      LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
-
-      SendBuffer = malloc(1024);
-      SendBuffer = memset(SendBuffer, '\0', 1024);
-
-      // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
 
       inet_ntop(AF_INET6, &LocalAddress.sin_addr, LocalAddressString,
           sizeof(LocalAddressString));
-
-      sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
-          ntohs(LocalAddress.sin_port));
-      printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
-          strlen(SendBuffer));
-
-      tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
-
-      free(DomainName);
-      free(Port);
-      freeaddrinfo(AddressInfo);
-
-      return 0;
     }
+
+    sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
+        ntohs(LocalAddress.sin_port));
+    printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
+        strlen(SendBuffer));
+
+    tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
+
+    free(DomainName);
+    free(Port);
+    freeaddrinfo(AddressInfo);
 
   }
 
