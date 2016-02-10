@@ -224,7 +224,7 @@ int main() {
     if (!tcpConnect(AddressInfo))
       return 0;
 
-    if (AddressInfo.ai_family == AF_INET) {
+    if (AddressInfo->ai_family == AF_INET) {
 
       LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
 
