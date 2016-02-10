@@ -20,9 +20,9 @@
 
 int PrimarySocket, SecondarySocket;
 struct sockaddr_in PrimaryAddress;
-char *ReceiveBuffer;
+char *ReceiveBuffer, *SendBuffer;
 
-int tcpSend(int sockfd, unsigned char *data, size_t bytes) {
+int tcpSend(int sockfd, char *data, size_t bytes) {
 
   size_t Written = write(sockfd, data, bytes);
   int Return = 0;
@@ -95,7 +95,7 @@ int sendInitData() {
   if (DEBUG)
     printf("Sending initialization data.\n");
 
-  if (!tcpSend(PrimarySocket, (unsigned char *) InitData, sizeof(InitData)))
+  if (!tcpSend(PrimarySocket, (char *) InitData, sizeof(InitData)))
     return 0;
 
   return 1;
@@ -177,7 +177,8 @@ int tcpConnect(struct addrinfo *AddressInfo) {
 
 int main() {
 
-  char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition, *NewLinePosition;
+  char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition,
+      *NewLinePosition, LocalAddressString[30];
   struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo));
   struct sockaddr_in LocalAddress;
 
@@ -221,7 +222,18 @@ int main() {
 
   LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
 
+  SendBuffer = malloc(1024);
+  SendBuffer = memset(SendBuffer, '\0', 1024);
+
   // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
+
+  inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString, sizeof(LocalAddressString));
+
+  sprintf(SendBuffer, "ADDR %s %d 296665", LocalAddressString, ntohs(LocalAddress.sin_port));
+  printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer, strlen(SendBuffer));
+
+
+  //tcpSend(SecondarySocket, SendBuffer, SendBufferSize);
 
   return 0;
 }
