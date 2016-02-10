@@ -237,5 +237,8 @@ int main() {
 
   tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
 
+  if (!tcpRead(PrimarySocket))
+    return 0;
+
   return 0;
 }
