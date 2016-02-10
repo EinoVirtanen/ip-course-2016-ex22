@@ -230,7 +230,7 @@ int main() {
   inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
       sizeof(LocalAddressString));
 
-  sprintf(SendBuffer, "ADDR %s %d 296665", LocalAddressString,
+  sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
       ntohs(LocalAddress.sin_port));
   printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
       strlen(SendBuffer));
