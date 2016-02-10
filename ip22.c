@@ -125,7 +125,7 @@ struct addrinfo* getIP(char *DomainName, char *Port,
 struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 
 
-  memset(&LocalAddress, 0, sizeof(LocalAddress));
+  memset(&LocalAddress, 0, sizeof(struct sockaddr_in));
 
   socklen_t LocalAddressSize = sizeof(LocalAddress);
 
@@ -141,7 +141,7 @@ struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 struct sockaddr_in6 getOwnIP6(int Socket, struct sockaddr_in6 Local6Address) {
 
 
-  memset(&Local6Address, 0, sizeof(Local6Address));
+  memset(&Local6Address, 0, sizeof(struct sockaddr_in6));
 
   socklen_t LocalAddressSize = sizeof(Local6Address);
 
@@ -210,7 +210,7 @@ int main() {
 
     memset(LocalAddressString, '\0', 100);
     memset(&LocalAddress, 0, sizeof(struct sockaddr_in));
-    memset(&Local6Address, 0, sizeof(struct sockaddr_in));
+    memset(&Local6Address, 0, sizeof(struct sockaddr_in6));
 
     if (!tcpRead(PrimarySocket))
       return 0;
@@ -262,7 +262,7 @@ int main() {
       printf("AddressInfo->ai_family is IPv6.\n");
       Local6Address = getOwnIP(SecondarySocket, Local6Address);
 
-      inet_ntop(AF_INET6, &LocalAddress.sin_addr, LocalAddressString,
+      inet_ntop(AF_INET6, &Local6Address.sin_addr, LocalAddressString,
           sizeof(LocalAddressString));
     }
 
