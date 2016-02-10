@@ -224,25 +224,31 @@ int main() {
     if (!tcpConnect(AddressInfo))
       return 0;
 
-    LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
+    if (AddressInfo.ai_family == AF_INET) {
 
-    SendBuffer = malloc(1024);
-    SendBuffer = memset(SendBuffer, '\0', 1024);
+      LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
 
-    // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
+      SendBuffer = malloc(1024);
+      SendBuffer = memset(SendBuffer, '\0', 1024);
 
-    inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
-        sizeof(LocalAddressString));
+      // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
 
-    sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
-        ntohs(LocalAddress.sin_port));
-    printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
-        strlen(SendBuffer));
+      inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
+          sizeof(LocalAddressString));
 
-    tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
+      sprintf(SendBuffer, "ADDR %s %d 296665\n", LocalAddressString,
+          ntohs(LocalAddress.sin_port));
+      printf("SendBuffer == %s, strlen(SendBuffer) == %zu\n", SendBuffer,
+          strlen(SendBuffer));
 
-    free(DomainName);
-    free(Port);
+      tcpSend(SecondarySocket, SendBuffer, strlen(SendBuffer));
+
+      free(DomainName);
+      free(Port);
+    } else {
+      printf("An IPv6 socket was opened, this needs to be implemented!\n");
+      return 0;
+    }
 
   }
 
