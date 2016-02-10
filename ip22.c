@@ -119,11 +119,6 @@ struct addrinfo* getIP(char *DomainName, char *Port,
     return NULL;
   }
 
-  if (!DomainName)
-    free(DomainName);
-  if (!Port)
-    free(Port);
-
   return AddressInfo;
 }
 
@@ -229,13 +224,23 @@ int main() {
           ReceiveBuffer, FirstSpacePosition, SecondSpacePosition,
           NewLinePosition);
 
-    DomainName = malloc(
-        sizeof(char) * (SecondSpacePosition - FirstSpacePosition));
+    if (!DomainName) {
+      DomainName = malloc(
+          sizeof(char) * (SecondSpacePosition - FirstSpacePosition));
+    } else {
+      DomainName = realloc(DomainName,
+          sizeof(char) * (SecondSpacePosition - FirstSpacePosition));
+    }
     memset(DomainName, '\0', SecondSpacePosition - FirstSpacePosition);
     memcpy(DomainName, FirstSpacePosition + 1,
         SecondSpacePosition - FirstSpacePosition - 1);
 
-    Port = malloc(sizeof(char) * (NewLinePosition - SecondSpacePosition));
+    if (!Port) {
+      Port = malloc(sizeof(char) * (NewLinePosition - SecondSpacePosition));
+    } else {
+      Port = realloc(Port,
+          sizeof(char) * (NewLinePosition - SecondSpacePosition));
+    }
     memset(Port, '\0', NewLinePosition - SecondSpacePosition);
     memcpy(Port, SecondSpacePosition + 1,
         NewLinePosition - SecondSpacePosition - 1);
