@@ -124,8 +124,6 @@ struct addrinfo* getIP(char *DomainName, char *Port,
 
 struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
 
-  char LocalAddressStringTmp[100];
-  memset(&LocalAddressStringTmp, 0, 100);
 
   memset(&LocalAddress, 0, sizeof(LocalAddress));
 
@@ -136,12 +134,23 @@ struct sockaddr_in getOwnIP(int Socket, struct sockaddr_in LocalAddress) {
     printf("Error getting local address.\n");
   }
 
-  inet_ntop(AF_INET6, &LocalAddress.sin_addr, LocalAddressStringTmp,
-      sizeof(LocalAddressStringTmp));
-
-  printf("getOwnIP: LocalAddress is now |%s|\n", LocalAddressStringTmp);
-
   return LocalAddress;
+}
+
+
+struct sockaddr_in6 getOwnIP6(int Socket, struct sockaddr_in6 Local6Address) {
+
+
+  memset(&Local6Address, 0, sizeof(Local6Address));
+
+  socklen_t LocalAddressSize = sizeof(Local6Address);
+
+  if (getsockname(Socket, (struct sockaddr *) &Local6Address, &LocalAddressSize)
+      < 0) {
+    printf("Error getting local address.\n");
+  }
+
+  return Local6Address;
 }
 
 // Course material as basis
@@ -187,7 +196,7 @@ int main() {
   char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition,
       *NewLinePosition, LocalAddressString[100];
   struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo)), *AddressInfoPoller;
-  struct sockaddr_in LocalAddress;
+  struct sockaddr_in LocalAddress, Local6Address;
 
   printf("Running exercise 2.2 by Eino.\n");
 
@@ -201,6 +210,7 @@ int main() {
 
     memset(LocalAddressString, '\0', 100);
     memset(&LocalAddress, 0, sizeof(struct sockaddr_in));
+    memset(&Local6Address, 0, sizeof(struct sockaddr_in));
 
     if (!tcpRead(PrimarySocket))
       return 0;
@@ -236,26 +246,27 @@ int main() {
     if (!AddressInfoPoller)
       return 0;
 
-    LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
 
     SendBuffer = malloc(1024);
     SendBuffer = memset(SendBuffer, '\0', 1024);
 
-    // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
-
     if (AddressInfoPoller->ai_family == AF_INET) {
 
       printf("AddressInfo->ai_family is IPv4.\n");
+      LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
 
       inet_ntop(AF_INET, &LocalAddress.sin_addr, LocalAddressString,
           sizeof(LocalAddressString));
 
     } else {
       printf("AddressInfo->ai_family is IPv6.\n");
+      Local6Address = getOwnIP(SecondarySocket, Local6Address);
 
       inet_ntop(AF_INET6, &LocalAddress.sin_addr, LocalAddressString,
           sizeof(LocalAddressString));
     }
+
+
 
     printf("LocalAddressString == |%s|\n", LocalAddressString);
 
