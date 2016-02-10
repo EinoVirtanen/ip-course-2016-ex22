@@ -64,7 +64,7 @@ int tcpRead(int sockfd) {
 int sendInitData() {
 
   const char InitData[] = "296665\n2.2-names\n";
-  const char InitIP[14];
+  const char InitIP[15];
 
   FILE *fp;
   fp = fopen(".info", "r");
