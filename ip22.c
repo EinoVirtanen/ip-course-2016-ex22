@@ -205,6 +205,9 @@ int main() {
           ReceiveBuffer, FirstSpacePosition, SecondSpacePosition,
           NewLinePosition);
 
+    free(DomainName);
+    free(Port);
+
     DomainName = malloc(
         sizeof(char) * (SecondSpacePosition - FirstSpacePosition - 1));
     memcpy(DomainName, FirstSpacePosition + 1,
