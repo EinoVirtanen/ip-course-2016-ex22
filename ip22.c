@@ -178,7 +178,7 @@ int main() {
 
   char *DomainName, *Port, *FirstSpacePosition, *SecondSpacePosition,
       *NewLinePosition, LocalAddressString[30];
-  struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo));
+  struct addrinfo *AddressInfo = malloc(sizeof(struct addrinfo)), *AddressInfoPoller;
   struct sockaddr_in LocalAddress;
 
   printf("Running exercise 2.2 by Eino.\n");
@@ -220,9 +220,9 @@ int main() {
     if (!AddressInfo)
       return 0;
 
-    AddressInfo = tcpConnect(AddressInfo);
+    AddressInfoPoller = tcpConnect(AddressInfo);
 
-    if (!AddressInfo)
+    if (!AddressInfoPoller)
       return 0;
 
     LocalAddress = getOwnIP(SecondarySocket, LocalAddress);
@@ -232,7 +232,7 @@ int main() {
 
     // Next 'ADDR <ip address> <port> <student ID>' needs to be sent
 
-    if (AddressInfo->ai_family == AF_INET) {
+    if (AddressInfoPoller->ai_family == AF_INET) {
 
       printf("AddressInfo->ai_family is IPv4.\n");
 
