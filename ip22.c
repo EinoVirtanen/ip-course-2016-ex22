@@ -245,6 +245,7 @@ int main() {
 
       free(DomainName);
       free(Port);
+      freeaddrinfo(AddressInfo);
     } else {
       printf("An IPv6 socket was opened, this needs to be implemented!\n");
       return 0;
